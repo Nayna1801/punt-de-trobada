@@ -214,13 +214,14 @@ legend { font: 800 .95rem var(--font-display); margin-bottom: 8px; padding: 0; }
 .tag.community { margin: 0 0 8px; background: var(--paper-2); }
 .place-card .tag.community { margin-left: 0; }
 .pick-banner {
-  position: absolute; z-index: 600; top: 12px; left: 50%; transform: translateX(-50%);
-  display: flex; align-items: center; gap: 12px; max-width: calc(100% - 24px);
+  position: absolute; z-index: 600; top: 12px; left: 12px; right: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
   background: var(--yellow); border: var(--border); border-radius: 12px; box-shadow: var(--shadow); padding: 8px 12px;
   font-weight: 700; font-size: .9rem;
 }
 .pick-banner[hidden] { display: none; }
 .picking .leaflet-container { cursor: crosshair !important; }
+.picking .leaflet-marker-icon { pointer-events: none !important; }
 
 .dialog { border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0; width: min(520px, calc(100% - 24px)); background: var(--white); color: var(--ink); }
 .dialog::backdrop { background: rgba(27, 27, 47, .55); }
