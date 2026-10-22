@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Punt de Trobada · Ocio joven en la Comunitat Valenciana</title>
+  <meta name="description" content="Mapa interactivo de planes gratuitos o asequibles para jóvenes en la Comunitat Valenciana y muro comunitario para proponer actividades semanales.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Punt de Trobada, inicio">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Punt de Trobada</span>
+    </a>
+    <nav aria-label="Principal">
+      <a href="#mapa">Mapa</a>
+      <a href="#muro">Muro</a>
+      <a href="#proyecto">El proyecto</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">Comunitat Valenciana · para jóvenes</p>
+      <h1>Planes gratis o baratos <span class="mark">cerca de ti</span>. Y los que propongas tú.</h1>
+      <p class="lead">Dinos cuánto tiempo tienes, cuánto quieres gastar y con quién vas. Te enseñamos en el mapa dónde quedar: centros cívicos, bibliotecas, polideportivos, plazas y parques.</p>
+    </section>
+
+    <section id="mapa" class="finder" aria-labelledby="mapa-titulo">
+      <h2 id="mapa-titulo" class="sr-only">Buscador y mapa de ocio</h2>
+
+      <aside class="panel">
+        <form id="filters" class="filters" autocomplete="off">
+          <fieldset>
+            <legend>¿De cuánto tiempo dispones?</legend>
+            <div class="seg" data-filter="time">
+              <button type="button" data-value="30">30 min</button>
+              <button type="button" data-value="60">1 h</button>
+              <button type="button" data-value="120">2 h</button>
+              <button type="button" data-value="any" class="on">Sin prisa</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>¿Cuánto quieres gastar?</legend>
+            <div class="seg" data-filter="budget">
+              <button type="button" data-value="0">Gratis</button>
+              <button type="button" data-value="5">Hasta 5 €</button>
+              <button type="button" data-value="10">Hasta 10 €</button>
+              <button type="button" data-value="any" class="on">Da igual</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>¿Con quién vas?</legend>
+            <div class="seg" data-filter="who">
+              <button type="button" data-value="solo">Solo/a</button>
+              <button type="button" data-value="amigos">Amistades</button>
+              <button type="button" data-value="familia">Familia</button>
+              <button type="button" data-value="any" class="on">Cualquiera</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>¿Qué te apetece?</legend>
+            <div class="chips" id="cat-chips"></div>
+          </fieldset>
+
+          <div class="filter-actions">
+            <button type="button" id="btn-near" class="btn">Cerca de mí</button>
+            <button type="button" id="btn-reset" class="btn btn-ghost">Limpiar</button>
+          </div>
+          <button type="button" id="btn-add" class="btn btn-primary">+ Añadir un punto al mapa</button>
+        </form>
+
+        <div class="results-head">
+          <p id="count" aria-live="polite"></p>
+        </div>
+        <ol id="results" class="results"></ol>
+      </aside>
+
+      <div class="map-wrap">
+        <div id="pick-banner" class="pick-banner" hidden>
+          <span>Toca en el mapa el lugar donde quieres crear el punto</span>
+          <button type="button" id="btn-pick-cancel" class="btn btn-ghost">Cancelar</button>
+        </div>
+        <div id="map" role="application" aria-label="Mapa interactivo de planes de ocio"></div>
+      </div>
+    </section>
+
+    <dialog id="add-dialog" class="dialog" aria-labelledby="add-title">
+      <form id="add-form" class="dialog-form">
+        <h3 id="add-title">Nuevo punto en el mapa</h3>
+        <p class="hint" id="add-coords"></p>
+
+        <label>Nombre del lugar
+          <input name="name" required maxlength="80" placeholder="Ej. Pistas del barrio">
+        </label>
+        <div class="row">
+          <label>Tipo de lugar
+            <select name="type" required></select>
+          </label>
+          <label>Municipio
+            <input name="city" required maxlength="50" placeholder="Ej. Gandia">
+          </label>
+        </div>
+        <label>Dirección (opcional)
+          <input name="address" maxlength="90">
+        </label>
+
+        <h4>Un plan que se pueda hacer allí</h4>
+        <label>Título del plan
+          <input name="act-title" required maxlength="70" placeholder="Ej. Partido de fútbol 5 libre">
+        </label>
+        <div class="row">
+          <label>Tipo de plan
+            <select name="act-cat" required></select>
+          </label>
+          <label>Precio (€, 0 = gratis)
+            <input name="act-cost" type="number" min="0" max="100" step="0.5" value="0" required>
+          </label>
+        </div>
+        <div class="row">
+          <label>Duración
+            <select name="act-minutes">
+              <option value="30">30 min</option>
+              <option value="60" selected>1 h</option>
+              <option value="90">1 h 30 min</option>
+              <option value="120">2 h</option>
+              <option value="180">3 h o más</option>
+            </select>
+          </label>
+          <label>Horario
+            <input name="act-schedule" maxlength="60" placeholder="Ej. Sáb · 18:00">
+          </label>
+        </div>
+        <fieldset class="who-set">
+          <legend>¿Para quién?</legend>
+          <label class="check"><input type="checkbox" name="act-who" value="solo" checked> Solo/a</label>
+          <label class="check"><input type="checkbox" name="act-who" value="amigos" checked> Amistades</label>
+          <label class="check"><input type="checkbox" name="act-who" value="familia" checked> Familia</label>
+        </fieldset>
+        <label>Descripción (opcional)
+          <textarea name="act-desc" rows="2" maxlength="160"></textarea>
+        </label>
+
+        <p id="add-error" class="form-error" role="alert" hidden></p>
+        <div class="dialog-actions">
+          <button type="button" id="btn-add-cancel" class="btn btn-ghost">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear punto</button>
+        </div>
+      </form>
+    </dialog>
+
+    <section id="muro" class="wall" aria-labelledby="muro-titulo">
+      <div class="section-head">
+        <p class="eyebrow">Muro comunitario</p>
+        <h2 id="muro-titulo">La semana la montamos entre todos</h2>
+        <p class="lead">¿Cine los miércoles? ¿Fútbol los viernes? ¿Baile los domingos? Propón un plan para un día concreto y apúntate a los de los demás: los más apoyados se quedan arriba.</p>
+      </div>
+
+      <div class="wall-layout">
+        <form id="proposal-form" class="proposal-form">
+          <h3>Proponer un plan</h3>
+          <label>Título
+            <input name="title" required maxlength="60" placeholder="Ej. Partido de baloncesto 3x3">
+          </label>
+          <div class="row">
+            <label>Día
+              <select name="day" required></select>
+            </label>
+            <label>Hora
+              <input name="time" type="time">
+            </label>
+          </div>
+          <label>Lugar
+            <input name="place" list="place-list" maxlength="70" placeholder="Elige uno del mapa o escribe otro">
+            <datalist id="place-list"></datalist>
+          </label>
+          <label>Cuéntanos más
+            <textarea name="desc" rows="3" maxlength="200" placeholder="Nivel, qué traer, coste aproximado…"></textarea>
+          </label>
+          <label>Tu nombre o alias
+            <input name="author" maxlength="30" placeholder="Anónimo">
+          </label>
+          <button type="submit" class="btn btn-primary">Publicar en el muro</button>
+          <p class="hint" id="sync-status"></p>
+        </form>
+
+        <div>
+          <div class="day-filter" id="day-filter" role="group" aria-label="Filtrar por día"></div>
+          <div id="board" class="board"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="proyecto" class="about" aria-labelledby="proyecto-titulo">
+      <div class="section-head">
+        <p class="eyebrow">El proyecto</p>
+        <h2 id="proyecto-titulo">Un lugar donde quedar, sin que cueste una fortuna</h2>
+      </div>
+      <div class="about-grid">
+        <article>
+          <h3>El problema</h3>
+          <p>Muchos jóvenes pasan el tiempo libre en casa o en espacios de consumo porque no saben qué opciones gratuitas o asequibles tienen cerca. Los recursos existen —centros cívicos, bibliotecas, polideportivos, parques—, pero están dispersos y poco visibles.</p>
+        </article>
+        <article>
+          <h3>La propuesta</h3>
+          <p>Un mapa de ocio interactivo de la Comunitat Valenciana que se adapta a tu situación (tiempo, dinero, compañía y tipo de plan) y un muro donde la propia juventud propone actividades semanales.</p>
+        </article>
+        <article>
+          <h3>El objetivo</h3>
+          <p>Fomentar espacios de convivencia, reducir el aislamiento y acercar a la juventud a su comunidad, con planes saludables que no dependan del presupuesto de cada uno.</p>
+        </article>
+      </div>
+      <p class="note">Los lugares son reales; las actividades, horarios y precios son <strong>ejemplos ilustrativos</strong> para esta demo universitaria. Consulta siempre la información oficial antes de ir.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Proyecto universitario · Mapa © <a href="https://www.openstreetmap.org/copyright">colaboradores de OpenStreetMap</a> · <a href="https://leafletjs.com">Leaflet</a></p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
