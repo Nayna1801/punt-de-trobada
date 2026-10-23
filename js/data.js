@@ -203,7 +203,66 @@ const PLACES = [
   },
 ];
 
-const WEEK_DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+// Planes de demo para que CUALQUIER combinacion de filtros devuelva algo. Los filtros de tiempo y
+// precio son "como maximo", asi que basta con cubrir el caso mas estricto (30 min + gratis) para
+// cada par categoria x compania; el resto de combinaciones los incluye automaticamente.
+const DEMO_COVERAGE = {
+  cabecera: [
+    { title: 'Vuelta rápida de running al lago', cat: 'deporte', cost: 0, minutes: 30, who: ['solo'], schedule: 'Todos los días · 8:00–22:00', desc: 'Un circuito corto para desconectar antes de clase o del trabajo.' },
+    { title: 'Merienda compartida entre familias', cat: 'social', cost: 0, minutes: 30, who: ['familia'], schedule: 'Sáb · 17:30', desc: 'Cada familia trae algo y se comparte en el césped.' },
+  ],
+  malvarrosa: [
+    { title: 'Partido relámpago de palas', cat: 'deporte', cost: 0, minutes: 30, who: ['amigos'], schedule: 'Todos los días · tardes', desc: 'Rondas rápidas en la orilla, sin reservar.' },
+  ],
+  ribalta: [
+    { title: 'Circuito de juegos y estiramientos', cat: 'deporte', cost: 0, minutes: 30, who: ['familia'], schedule: 'Dom · 11:00', desc: 'Mini circuito para mayores y pequeños con monitores voluntarios.' },
+  ],
+  carme: [
+    { title: 'Visita exprés a la sala de exposiciones', cat: 'cultura', cost: 0, minutes: 30, who: ['solo'], schedule: 'Mar–Dom · 10:00–20:00', desc: 'Una sala, sin prisas y sin entrada.' },
+  ],
+  nau: [
+    { title: 'Visita al claustro con tu grupo', cat: 'cultura', cost: 0, minutes: 30, who: ['amigos'], schedule: 'L–V · 10:00–19:00', desc: 'Recorrido corto por el edificio histórico de la Universitat.' },
+  ],
+  bibval: [
+    { title: 'Cuentacuentos y taller de lectura', cat: 'cultura', cost: 0, minutes: 30, who: ['familia'], schedule: 'Sáb · 11:00', desc: 'Historias para todas las edades y un marcapáginas para llevarte.' },
+  ],
+  palmeral: [
+    { title: 'Paseo corto de respiración y mindfulness', cat: 'naturaleza', cost: 0, minutes: 30, who: ['solo'], schedule: 'Todos los días · mañanas', desc: 'Media hora de calma entre palmeras.' },
+  ],
+  santabarbara: [
+    { title: 'Mirador al atardecer con amistades', cat: 'naturaleza', cost: 0, minutes: 30, who: ['amigos'], schedule: 'Todos los días · atardecer', desc: 'Sube un rato, charla y baja con la bahía de fondo.' },
+  ],
+  albufera: [
+    { title: 'Ruta corta de aves para peques', cat: 'naturaleza', cost: 0, minutes: 30, who: ['familia'], schedule: 'Sáb y dom · 10:00', desc: 'Sendero llano con prismáticos de juguete para pequeños.' },
+  ],
+  explanada: [
+    { title: 'Escucha de música callejera', cat: 'musica', cost: 0, minutes: 30, who: ['solo'], schedule: 'Sáb y dom · 18:00', desc: 'Siéntate bajo los árboles y descubre artistas locales.' },
+  ],
+  gandia: [
+    { title: 'Jam de percusión en la arena', cat: 'musica', cost: 0, minutes: 30, who: ['amigos'], schedule: 'Vie · 20:00', desc: 'Trae un tambor o una botella y súmate al ritmo.' },
+  ],
+  torrevieja: [
+    { title: 'Mini concierto de domingo en familia', cat: 'musica', cost: 0, minutes: 30, who: ['familia'], schedule: 'Dom · 12:00', desc: 'Repertorio para todos los públicos de bandas de la zona.' },
+  ],
+  alcoi: [
+    { title: 'Partida rápida de ajedrez con desconocidos', cat: 'juegos', cost: 0, minutes: 30, who: ['solo'], schedule: 'Todos los días · tardes', desc: 'Siéntate a una mesa libre y reta a quien llegue.' },
+  ],
+  aiguera: [
+    { title: 'Ronda exprés de cartas y dominó', cat: 'juegos', cost: 0, minutes: 30, who: ['amigos'], schedule: 'Todos los días · tardes', desc: 'Mesas libres, baraja prestada si no tienes.' },
+  ],
+  turia: [
+    { title: 'Gymkana de juegos tradicionales', cat: 'juegos', cost: 0, minutes: 30, who: ['familia'], schedule: 'Dom · 12:00', desc: 'Peonza, chapas y comba con premios simbólicos.' },
+  ],
+  'parque-elx': [
+    { title: 'Banco de conversación: conoce gente nueva', cat: 'social', cost: 0, minutes: 30, who: ['solo'], schedule: 'Mié · 18:00', desc: 'Un rato de charla con temas sugeridos, sin compromiso.' },
+  ],
+  'ayuntamiento-vlc': [
+    { title: 'Mini quedada de fotos y retos', cat: 'social', cost: 0, minutes: 30, who: ['amigos'], schedule: 'Sáb · 18:00', desc: 'Retos fotográficos por la plaza en equipos pequeños.' },
+  ],
+};
+PLACES.forEach((place) => place.activities.push(...(DEMO_COVERAGE[place.id] || [])));
+
+const WEEK_DAYS =['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 // Propuestas iniciales del muro comunitario (el usuario añade las suyas).
 const SEED_PROPOSALS = [
